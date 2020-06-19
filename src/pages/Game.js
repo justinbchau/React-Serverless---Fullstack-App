@@ -17,15 +17,6 @@ export default function Game({ history }) {
   const [ms, setMs] = useState(0);
   const [seconds, setSeconds] = useState(MAX_SECONDS);
 
-  useEffect(() => {
-    setRandomCharacter();
-    setScore(0);
-    const currentTime = new Date();
-    const interval = setInterval(() => updateTime(currentTime), 1);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line no-use-before-define
-  }, []);
-
   const updateTime = (startTime) => {
     const endDate = new Date();
     const msPassedStr = (endDate.getTime() - startTime.getTime()).toString();
@@ -39,6 +30,15 @@ export default function Game({ history }) {
     setSeconds(addLeadingZeros(updatedSeconds, 2));
     setMs(addLeadingZeros(updatedMs, 3));
   };
+
+  useEffect(() => {
+    setRandomCharacter();
+    setScore(0);
+    const currentTime = new Date();
+    const interval = setInterval(() => updateTime(currentTime), 1);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (seconds <= -1) {
@@ -57,7 +57,7 @@ export default function Game({ history }) {
 
   const keyUpHandler = useCallback(
     (e) => {
-      console.log(e.key);
+      console.log(e.key, currentCharacter);
       if (e.key === currentCharacter) {
         setScore((prevScore) => prevScore + 1);
       } else {
@@ -67,7 +67,7 @@ export default function Game({ history }) {
       }
       setRandomCharacter();
     },
-    [currentCharacter]
+    [currentCharacter, setScore, score]
   );
 
   useEffect(() => {
